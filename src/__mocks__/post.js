@@ -117,9 +117,12 @@ export const MockPost = (count) =>
     .map(() => ({
       id: shortId.generate(),
       content: faker.lorem.paragraph(),
+      detailContent: faker.lorem.paragraphs(5),
+      title: faker.lorem.sentence(5),
       User: {
         id: shortId.generate(),
         nick_name: faker.name.firstName(),
+        full_name: faker.name.fullName(),
         profile_img: faker.image.avatar(),
       },
       Post_img: Array(Math.floor(Math.random() * 3) + 1)

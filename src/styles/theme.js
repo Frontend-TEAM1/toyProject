@@ -21,6 +21,7 @@ const FONT_SIZE = {
 	small: '14px',
 	medium: '18px',
 	large: '20px',
+	extra: '40px',
 };
 
 const FONT_WEIGHT = {

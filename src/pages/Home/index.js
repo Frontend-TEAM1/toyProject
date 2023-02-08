@@ -6,7 +6,7 @@ import Card from "./components/Card/Card";
 
 function HomePage() {
     const Posts = MockPost(10);
-
+    
     return (
         <Container>
             {Posts.map((diary) => {
@@ -26,5 +26,5 @@ const Container = styled.div`
     /* justify-content: space-between; */
     border: 1px solid red;
     flex-wrap: wrap;
-    background-color: rgb(245, 245, 245);
+    background-color: '#F3F3F3';
 `

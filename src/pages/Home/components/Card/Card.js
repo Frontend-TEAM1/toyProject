@@ -1,25 +1,31 @@
 import styled from "styled-components";
 import theme from "../../../../styles/theme";
 import { flexAlignCenter, flexCenter } from "../../../../styles/common";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Card({ diary }) {
-  console.log(Object.values(diary)[5]);
+  // console.log(Object.values(diary)[5]);
 
+  const navigate = useNavigate();
   
-  const goDetail = (e) => {
-        <Link to='/detail' />
-        // url에 /detail 붙게 하면 될듯..
+  const goDetail = () => {
+    navigate(`/${diary.User.nick_name}`,{
+      state:diary
+    });
+
+    window.scrollTo(0,0);
   }
 
+  const myDate = String(diary.createdAt).split(' ').splice(0, 4).join(' ');
+
   return (
-    <S.Wrapper>
-      <S.Container onClick={goDetail}>
+    <S.Wrapper onClick={goDetail} >
+      <S.Container>
         <div>
           <S.UserName>{diary.User.nick_name}</S.UserName>
-          <S.Date>{String(diary.createdAt)}</S.Date>
-          {/* <img src={diary.User.profile_img}/> */}
+          <img src={diary.User.profile_img} style={{width:"70px",height:"70px", borderRadius: "50%"}}/>
         </div>
+          <S.Date>{myDate}</S.Date>
         <S.Title>
           <p>TITLE</p>
         </S.Title>
@@ -42,7 +48,7 @@ const Wrapper = styled.div`
   border-radius: 20px;
   /* & :hover {
     box-shadow: 5px 5px 5px 5px rgb(245, 245, 245)
-    e.stopPropagation()
+    stopPropagation()
   } */
 `;
 
@@ -73,20 +79,23 @@ const Title = styled.div`
   font-weight: ${theme.FONT_WEIGHT.bold};
   ${flexCenter}
   border-top: 2px solid black;
-  margin-top: 30px;
+  margin-top: 10px;
   margin-bottom: 20px;
+  padding-top: 5px;
 `;
 
 const Date = styled.div`
-  width: fit-content;
-  max-width: 100px;
+  width: 100%;
+  /* max-width: 100px; */
   font-size: ${theme.FONT_SIZE.small};
+  margin-top: 10px;
 `;
 
 const UserName = styled.div`
   width: fit-content;
   max-width: 100px;
-  font-size: ${theme.FONT_SIZE.small};
+  font-size: ${theme.FONT_SIZE.large};
+  font-weight: ${theme.FONT_WEIGHT.bold};
 `;
 
 const DetailContent = styled.div`

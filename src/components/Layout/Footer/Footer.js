@@ -25,7 +25,7 @@ const Container = styled.div`
   padding: 50px;
   display: flex;
   flex-direction: column;
-  background-color: yellow;
+  background-color: #EDD200;
   & > div {
     width: 100%;
     ${flexCenter}
