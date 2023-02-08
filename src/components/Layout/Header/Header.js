@@ -23,9 +23,10 @@ export default BasicHeader;
 
 const Container = styled.div`
   display: flex;
-  height: 60px;
+  height: 80px;
   width: 100%;
   background-color: black;
+  padding: 30px;
   & > div {
     width: 100%;
     ${flexCenter}
