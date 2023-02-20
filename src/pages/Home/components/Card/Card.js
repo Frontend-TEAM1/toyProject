@@ -2,30 +2,63 @@ import styled from "styled-components";
 import theme from "../../../../styles/theme";
 import { flexAlignCenter, flexCenter } from "../../../../styles/common";
 import { Link, useNavigate } from "react-router-dom";
+import moment from "moment";
 
 function Card({ diary }) {
   // console.log(Object.values(diary)[5]);
 
   const navigate = useNavigate();
-  
+
   const goDetail = () => {
-    navigate(`/${diary.User.nick_name}`,{
-      state:diary
+    navigate(`/${diary.User.nick_name}`, {
+      state: diary,
     });
 
-    window.scrollTo(0,0);
+    window.scrollTo(0, 0);
+  };
+
+  // const myDate = String(diary.createdAt).split(' ').splice(0, 4).join(' ');
+  // 날짜 파싱
+
+  const myDate = moment(diary.createdAt);
+  //const myDate = String(diary.createdAt).split(' ').splice(0, 4).join(' ');
+
+  const today = moment("2023-01-31 23:59:59", "YYYY-MM-DD hh:mm:ss");
+  //today에는 오늘 날짜가 moment 객체로 저장
+
+  const diff = today.diff(myDate, "days");
+  //diff에는 오늘 날짜와 myDate의 차이가 일 단위로 저장됩니다.
+
+  /*
+moment() : 날짜를 비교하고 원하는 포맷으로 변환할 수 있음.
+ diff에는 오늘 날짜와 myDate의 차이가 일 단위로 저장됩니다.
+*/
+  let dateString;
+
+  // diff===0 만 있으면 시간 차이가 얼마 안날때 23시55분이나 00시15분때도 같은 날로 인식. day()로 요일정보까지 비교후 같은지 확인.
+  // console.log("===================> " + myDate);
+  if (diff === 0 && myDate.day() === today.day()) {
+    dateString = "3시간 전";
+  } else if (diff > 2) {
+    dateString = myDate.format("YYYY-MM-DD");
+  } else if (diff > 0) {
+    // console.log(diff);
+    dateString = `${diff}일 전`;
+  } else {
+    dateString = myDate.format("YYYY-MM-DD");
   }
 
-  const myDate = String(diary.createdAt).split(' ').splice(0, 4).join(' ');
-
   return (
-    <S.Wrapper onClick={goDetail} >
+    <S.Wrapper onClick={goDetail}>
       <S.Container>
         <div>
           <S.UserName>{diary.User.nick_name}</S.UserName>
-          <img src={diary.User.profile_img} style={{width:"70px",height:"70px", borderRadius: "50%"}}/>
+          <img
+            src={diary.User.profile_img}
+            style={{ width: "70px", height: "70px", borderRadius: "50%" }}
+          />
         </div>
-          <S.Date>{myDate}</S.Date>
+        <S.Date>{dateString}</S.Date>
         <S.Title>
           <p>TITLE</p>
         </S.Title>
