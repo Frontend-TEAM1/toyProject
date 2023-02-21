@@ -4,7 +4,7 @@ import { flexAlignCenter } from "../../../styles/common";
 import CommentList from "./CommentList";
 
 function CommentBoard({ comList, setCommentList }) {
-  // console.log("CommentBoard", comList);
+  console.log("CommentBoard", comList);
 
   return (
     <Wrapper>

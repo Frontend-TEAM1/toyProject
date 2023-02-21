@@ -14,24 +14,17 @@ function CommentInput({ commentList }) {
   // 새 댓글 입력 후 저장버튼 클릭 이벤트
   const addItem = () => {
     setCommentList([...comList, inputValue]); //기존유지+ 새로운 input value
-    setInputValue(""); // 바꾸고싶은 값만 넣기
+    inputValue.value = '';
+    console.log(comList);
   };
 
-  /*
-  useEffect(() => {
-    localStorage.setItem("comList", JSON.stringify(comList)); // 웹브라우저에 저장하기(첫번째는 key, 두번째는 값(value))
-  }, [comList]); // comList 값이 바뀔때마다 localstorage에 값을 저장,삭제,수정한다.
-  // f12 -> application -> local storage -> localhost에서 확인가능
-  // JSON.stringfy -> 문자화시키는거 + JSON.parse는 배열화하는거
-  */
 
   const updateInput = (event) => {
-    console.log();
     let value = event.target.value;
     return setInputValue({
       User: { nick_name: "글쓴이", profile_img: faker.image.avatar() },
       content: value,
-      Comments: { myComment: "Y" },
+      myComment: "Y",
     });
   };
 

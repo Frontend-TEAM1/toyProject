@@ -3,6 +3,7 @@ import theme from "../../../../styles/theme";
 import { flexAlignCenter, flexCenter } from "../../../../styles/common";
 import { Link, useNavigate } from "react-router-dom";
 import moment from "moment";
+import dayjs from "dayjs";
 
 function Card({ diary }) {
   // console.log(Object.values(diary)[5]);

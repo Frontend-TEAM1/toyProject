@@ -2,10 +2,8 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { flexCenter, flexAlignCenter } from "../../../styles/common";
 import moment from "moment";
+import dayjs from "dayjs";
 
-// 지금 해야하는 부분은 있던 댓글에는 수정/삭제버튼 안보이고 새로 단 댓글에서만 보이게
-// 수정을 눌렀을 때 기존 값 나오고 수정 버튼 눌렸을 때 바뀐 값으로 댓글창 업데이트
-// 취소 누르면 원래 기존 값 유지하고 삭제 버튼 누르면 삭제되게...
 
 
 function CommentList({ item, comList, setCommentList }) {
@@ -14,6 +12,7 @@ function CommentList({ item, comList, setCommentList }) {
    새 댓글 저장 버튼 입력시 입력 내용 추가한 comList로 바꾸고 > CommentBoard로 comList랑 setCommentList보내고 >
    Board에서 map 돌리는 인덱스를 item으로 넘김 */
   // 즉 item은 새 댓글 업데이트 된 댓글 배열
+  // https://jsikim1.tistory.com/196 dayjs 글
 
   //댓글삭제
   const onDeleteCom = () => {
@@ -29,22 +28,10 @@ function CommentList({ item, comList, setCommentList }) {
   // 삭제 버튼을 클릭했을 때, onDeleteCom을 실행
 
   const [isEdit, setIsEdit] = useState(false);
-  const [inputValue, setInputValue] = useState(item);
+  const [inputValue, setInputValue] = useState(item.content);
   const [original, setOriginal] = useState(item.content);
-  const [isBtnVisible, setIsBtnVisible] = useState("hidden");
 
-  //댓글수정 값 저장
-  // const onEditCom = () => {
-  //   const newComList = item.map((com) => {
-  //     if (com === item) {
-  //       return setInputValue(inputValue);
-  //     } else {
-  //       return setInputValue(com);
-  //     }
-  //   });
-  //   console.log("새댓글수정버튼이 눌림", newComList);
-  //   setCommentList(newComList);
-  // };
+
 
   // 날짜 파싱
 
@@ -78,80 +65,27 @@ function CommentList({ item, comList, setCommentList }) {
 
   // 수정버튼 클릭 이벤트
   const handleEdit = () => {
-    // setIsEdit((prev) => !prev);
-    setIsEdit(true);
-    if(isEdit) {
-      if(item.content === inputValue) return;
-
-
-
-    }
+    setIsEdit((prev) => !prev);
     // if(!isEdit) {
-    //   setOriginal(inputValue)
-    //   setCommentList([...comList, inputValue])
-    // };
-    // if(!isEdit) {
-    // const newComList = item.map((com) => {
-    //   (com === inputValue)
-    //   if (com !== item) {
-    //     return setInputValue(inputValue);
-    //   } else {
-    //     return setInputValue(com);
-    //   }
-    // console.log("새댓글수정버튼이 눌림", newComList);
-    // setCommentList(newComList);
-    // return;
-    // onEditCom();
-    // if (isEdit === true) {
-    //   setIsEdit(false);
-    //   onEditCom();
-    // } else {
-    //   setIsEdit(true);
+    //   if(item.content === inputValue) return;
     // }
   };
-
-  const handleEditSave = () => {
-
-  }
-  // 취소버튼 클릭 이벤트
-  const handleCancelEdit = () => {
-    setIsEdit(false);
-  };
-
-  // 내가작성한 코멘트만 수정/삭제 버튼 보이기
-
-  // useEffect(() => {
-  //   console.log("=====" + item);
-  //   const newItem = [...item];
-  //   if (newItem.Comments.length > 0 && newItem.Comments.myComment === "Y") {
-  //     setIsBtnVisible("visible");
-  //   }
-  //   return;
-  // }, [comList]);
+ 
 
   //삼항연산자를 활용해서 isEdit === true일때 false일때 버튼,input의 역할지정
   return (
     <>
       <S.CommentItem>
-        {/* {isEdit ? (
-          <input
-            value={inputValue}
-            onChange={(event) => {
-              setInputValue(event.target.value);
-            }}
-          />
-        ) : ( 
-          // 댓글랜덤으로 불러오는 위치 */}
+          {/* 댓글 랜덤으로 불러오는 위치 */}
           <S.Wrapper>
             <S.RandomCom>
               <span style={{ width: "20%" }}>{item.User.nick_name}</span>
               <span>{dateString}</span>
-              {item.Comments.mycomment === 'Y' && <S.Buttons style={{ visibility: { isBtnVisible } }}>
-                <button onClick={handleEdit}>수정</button>
-                {isEdit && <button onClick={handleCancelEdit}>취소</button>}
-                {!isEdit && <button onClick={onDeleteCom}>삭제</button>}
+              {item.myComment === 'Y' && 
+              <S.Buttons>
+                <button onClick={handleEdit}>{isEdit ? "저장" : '수정'}</button>
+                <button onClick={onDeleteCom}>{isEdit ? "취소" : '삭제'}</button>
               </S.Buttons>}
-              {/* } */}
             </S.RandomCom>
             <S.RandomCom>
               <img
@@ -165,7 +99,7 @@ function CommentList({ item, comList, setCommentList }) {
               setInputValue(event.target.value);
             }}
             style={{ width: "100%"}}>
-          {item.content}</textarea> : <span style={{ width: "80%" }}>{original}</span>}
+          {inputValue}</textarea> : <span style={{ width: "80%" }}>{inputValue}</span>}
             </S.RandomCom>
           </S.Wrapper>
       </S.CommentItem>
