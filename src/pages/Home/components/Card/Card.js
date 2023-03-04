@@ -1,9 +1,10 @@
-import styled from "styled-components";
-import theme from "../../../../styles/theme";
-import { flexAlignCenter, flexCenter } from "../../../../styles/common";
-import { Link, useNavigate } from "react-router-dom";
-import moment from "moment";
-import dayjs from "dayjs";
+import styled from 'styled-components';
+import theme from '../../../../styles/theme';
+import { flexAlignCenter, flexCenter } from '../../../../styles/common';
+import { Link, useNavigate } from 'react-router-dom';
+import moment from 'moment';
+import dayjs from 'dayjs';
+// import { DateTime } from 'luxon';
 
 function Card({ diary }) {
   // console.log(Object.values(diary)[5]);
@@ -18,9 +19,22 @@ function Card({ diary }) {
     window.scrollTo(0, 0);
   };
 
-  // const myDate = String(diary.createdAt).split(' ').splice(0, 4).join(' ');
   // 날짜 파싱
+  // Dayjs
+  const created = dayjs(diary.createdAt);
+  const today = dayjs('2023-01-31 23:59', 'YYYY-MM-DD HH:mm');
+  const dayDiff = today.diff(created, 'd');
+  //true까지 넣으면 소수점단위로 초까지 비교 후 리턴
 
+  console.log(created.date);
+  let DATE;
+  if (dayDiff === 0 && created.get('d') === today.get('d')) DATE = '3시간 전';
+  if (dayDiff >= 1) DATE = `${dayDiff}일 전`;
+  if (dayDiff >= 4) DATE = created.format('YYYY-MM-DD');
+
+  console.log('DAY===============', dayDiff);
+
+  /* momentJs
   const myDate = moment(diary.createdAt);
   //const myDate = String(diary.createdAt).split(' ').splice(0, 4).join(' ');
 
@@ -30,10 +44,10 @@ function Card({ diary }) {
   const diff = today.diff(myDate, "days");
   //diff에는 오늘 날짜와 myDate의 차이가 일 단위로 저장됩니다.
 
-  /*
-moment() : 날짜를 비교하고 원하는 포맷으로 변환할 수 있음.
- diff에는 오늘 날짜와 myDate의 차이가 일 단위로 저장됩니다.
-*/
+  =======================================================
+  moment() : 날짜를 비교하고 원하는 포맷으로 변환할 수 있음.
+  diff에는 오늘 날짜와 myDate의 차이가 일 단위로 저장됩니다.
+
   let dateString;
 
   // diff===0 만 있으면 시간 차이가 얼마 안날때 23시55분이나 00시15분때도 같은 날로 인식. day()로 요일정보까지 비교후 같은지 확인.
@@ -48,6 +62,7 @@ moment() : 날짜를 비교하고 원하는 포맷으로 변환할 수 있음.
   } else {
     dateString = myDate.format("YYYY-MM-DD");
   }
+  */
 
   return (
     <S.Wrapper onClick={goDetail}>
@@ -56,10 +71,11 @@ moment() : 날짜를 비교하고 원하는 포맷으로 변환할 수 있음.
           <S.UserName>{diary.User.nick_name}</S.UserName>
           <img
             src={diary.User.profile_img}
-            style={{ width: "70px", height: "70px", borderRadius: "50%" }}
+            style={{ width: '70px', height: '70px', borderRadius: '50%' }}
           />
         </div>
-        <S.Date>{dateString}</S.Date>
+        {/* <S.Date>{dateString}</S.Date> */}
+        <S.Date>{DATE}</S.Date>
         <S.Title>
           <p>TITLE</p>
         </S.Title>

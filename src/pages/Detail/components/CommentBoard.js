@@ -1,19 +1,26 @@
-import React from "react";
-import styled from "styled-components";
-import { flexAlignCenter } from "../../../styles/common";
-import CommentList from "./CommentList";
+import React from 'react';
+import styled from 'styled-components';
+import { flexAlignCenter } from '../../../styles/common';
+import CommentList from './CommentList';
 
-function CommentBoard({ comList, setCommentList }) {
-  console.log("CommentBoard", comList);
+function CommentBoard({ commentList, id }) {
+  // console.log("CommentInput으로부터 받은 comList", comList);
 
+  console.log(commentList);
   return (
     <Wrapper>
       <div>
         <span>ALL COMMENTS</span>
-        {comList &&
-          comList.map((item) => {
-            return <CommentList item={item} comList={comList} setCommentList={setCommentList} />
-          })}
+        {commentList &&
+          commentList
+            .sort((a, b) => {
+              return b.createdAt - a.createdAt;
+            })
+            .map((item) => {
+              return (
+                <CommentList item={item} commentList={commentList} id={id} />
+              );
+            })}
       </div>
     </Wrapper>
   );
@@ -28,8 +35,6 @@ const Wrapper = styled.div`
   & > span {
     font-size: 20px;
     font-weight: bold;
-
-
   }
   & > div {
     width: 70%;

@@ -1,46 +1,40 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
-import styled from "styled-components";
+import React, { useEffect } from 'react';
+import { useState } from 'react';
+import styled from 'styled-components';
 // import { mockData } from "__mocks__/post";
-import { faker } from "@faker-js/faker";
-import { flexCenter, flexAlignCenter } from "../../../styles/common";
-import CommentBoard from "./CommentBoard";
+import { faker } from '@faker-js/faker';
+import { flexCenter, flexAlignCenter } from '../../../styles/common';
+import CommentBoard from './CommentBoard';
+import { useDispatch } from 'react-redux';
+import { addComment } from '../../../store/diary';
 
-function CommentInput({ commentList }) {
-  const [inputValue, setInputValue] = useState(""); //input창 빈문자열로 시작
-  const [comList, setCommentList] = useState(commentList);
+function CommentInput({ commentList, id }) {
+  const [inputValue, setInputValue] = useState(''); //input창 빈문자열로 시작
   // console.log("comList", comList);
+  const dispatch = useDispatch();
 
   // 새 댓글 입력 후 저장버튼 클릭 이벤트
   const addItem = () => {
-    setCommentList([...comList, inputValue]); //기존유지+ 새로운 input value
-    inputValue.value = '';
-    console.log(comList);
-  };
-
-
-  const updateInput = (event) => {
-    let value = event.target.value;
-    return setInputValue({
-      User: { nick_name: "글쓴이", profile_img: faker.image.avatar() },
-      content: value,
-      myComment: "Y",
-    });
+    if (!inputValue) return;
+    dispatch(addComment({ id, content: inputValue }));
+    setInputValue('');
   };
 
   return (
     <>
       <S.list>
-        <CommentBoard comList={comList} setCommentList={setCommentList} />
+        <CommentBoard commentList={commentList} id={id} />
       </S.list>
       <S.ComWrapper>
         <input
-          value={inputValue.value}
+          value={inputValue}
           // inputValue 가 object라서 키값 접근을 위해서 .value를 추가함. (그전에는 [object, Object]로 찍혔음)
           // 버튼을 클릭했을 때, input 의 value 값을 비운다.}
-          type="text"
-          placeholder="착한 댓글을 달아주세요"
-          onChange={updateInput}
+          type='text'
+          placeholder='착한 댓글을 달아주세요'
+          onChange={(e) => {
+            return setInputValue(e.target.value);
+          }}
         />
         <S.btn onClick={addItem}>저장</S.btn>
       </S.ComWrapper>

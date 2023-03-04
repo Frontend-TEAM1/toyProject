@@ -1,13 +1,15 @@
-import { MockPost } from "./__mocks__/post";
+import { MockPost } from './__mocks__/post';
 
-import { RouterProvider } from "react-router-dom";
-import router from "./routes/routing";
+import { RouterProvider } from 'react-router-dom';
+import router from './routes/routing';
 
-import { ThemeProvider } from "styled-components";
-import GlobalStyles from "./styles/global";
-import theme from './styles/theme'
-
-
+import { ThemeProvider } from 'styled-components';
+import GlobalStyles from './styles/global';
+import theme from './styles/theme';
+import { createStore } from 'redux';
+import { rootReducer } from './store/@root';
+import { store } from './store/store';
+import { Provider } from 'react-redux';
 
 function App() {
   // const Posts = MockPost(5);
@@ -15,10 +17,12 @@ function App() {
   // console.log(Posts);
 
   return (
+    <Provider store={store}>
       <ThemeProvider theme={theme}>
         <GlobalStyles />
         <RouterProvider router={router} />
       </ThemeProvider>
+    </Provider>
   );
 }
 

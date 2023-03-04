@@ -1,25 +1,32 @@
-import { useEffect, useState } from "react";
-import styled from "styled-components";
-import { flexCenter, flexAlignCenter } from "../../../styles/common";
-import moment from "moment";
-import dayjs from "dayjs";
+import { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { flexCenter, flexAlignCenter } from '../../../styles/common';
+import moment from 'moment';
+import dayjs from 'dayjs';
+import { useDispatch } from 'react-redux';
+import { deleteComment, editComment } from '../../../store/diary';
 
-
-
-function CommentList({ item, comList, setCommentList }) {
-  /* item은 Home > mockpost를 Card > navigate 전달한걸 Detail index에서 state로 받음 > 
-   받은 state 중 Comments만 CommentInput으로 넘김 > CommentInput에서 comList의 초기값으로 설정 >
-   새 댓글 저장 버튼 입력시 입력 내용 추가한 comList로 바꾸고 > CommentBoard로 comList랑 setCommentList보내고 >
-   Board에서 map 돌리는 인덱스를 item으로 넘김 */
-  // 즉 item은 새 댓글 업데이트 된 댓글 배열
+function CommentList({ item, commentList, id }) {
+  // item은 새 댓글 포함된 배열의 한개 한개(map의 결과)
+  // commentList는 새 댓글 포함 전체 댓글들이 담긴 배열
   // https://jsikim1.tistory.com/196 dayjs 글
 
+  const dispatch = useDispatch();
   //댓글삭제
   const onDeleteCom = () => {
-    const newComList = comList.filter((com) => {
-      return com !== item;
-    });
-    setCommentList(newComList);
+    if (isEdit) {
+      // 취소버튼으로써 동작할 때
+      setInputValue(original);
+      return setIsEdit(false);
+    }
+    dispatch(deleteComment({ diaryId: id, commentId: item.id }));
+    // 데이터는 바뀌었는데 왜 그려지지 않을까? state로만 바뀌면 될 것 같은데
+
+    // const newComList = commentList.filter((com) => {
+    //   return com.id !== item.id;
+    // });
+    // // setCommentList(newComList);
+    // commentList = newComList;
   };
 
   // 삭제버튼을 누르면 일치하는 저장된 값을 비운다.
@@ -29,79 +36,83 @@ function CommentList({ item, comList, setCommentList }) {
 
   const [isEdit, setIsEdit] = useState(false);
   const [inputValue, setInputValue] = useState(item.content);
-  const [original, setOriginal] = useState(item.content);
-
-
-
-  // 날짜 파싱
-
-  const myDate = moment(item.createdAt);
-  //const myDate = String(diary.createdAt).split(' ').splice(0, 4).join(' ');
-
-  const today = moment("2023-01-31 23:59:59", "YYYY-MM-DD hh:mm:ss");
-  //today에는 오늘 날짜가 moment 객체로 저장
-
-  const diff = today.diff(myDate, "days");
-  //diff에는 오늘 날짜와 myDate의 차이가 일 단위로 저장됩니다.
+  // const [original, setOriginal] = useState(inputValue);
+  let original = inputValue;
 
   /*
-    moment() : 날짜를 비교하고 원하는 포맷으로 변환할 수 있음.
-    diff에는 오늘 날짜와 myDate의 차이가 일 단위로 저장됩니다.
+아이디어..!
+state로 관리하는게 item.content말고 다른 값을 넣고..
+comList자체에 접근해서  content만 업데이트하고 리랜더링?
 */
-  let dateString;
 
-  // diff===0 만 있으면 시간 차이가 얼마 안날때 23시55분이나 00시15분때도 같은 날로 인식. day()로 요일정보까지 비교후 같은지 확인.
-  // console.log("===================> " + myDate);
-  if (diff === 0 && myDate.day() === today.day()) {
-    dateString = "3시간 전";
-  } else if (diff > 2) {
-    dateString = myDate.format("YYYY-MM-DD");
-  } else if (diff > 0) {
-    // console.log(diff);
-    dateString = `${diff}일 전`;
-  } else {
-    dateString = myDate.format("YYYY-MM-DD");
-  }
+  // Dayjs
+  const created = dayjs(item.createdAt);
+  const today = dayjs('2023-01-31 23:59', 'YYYY-MM-DD HH:mm');
+  const dayDiff = today.diff(created, 'd');
+  //true까지 넣으면 소수점단위로 초까지 비교 후 리턴
+
+  // console.log(created.date)
+  let DATE;
+  if (dayDiff === 0 && created.get('d') === today.get('d')) DATE = '3시간 전';
+  if (dayDiff >= 1) DATE = `${dayDiff}일 전`;
+  if (dayDiff >= 4) DATE = created.format('YYYY-MM-DD');
 
   // 수정버튼 클릭 이벤트
   const handleEdit = () => {
     setIsEdit((prev) => !prev);
-    // if(!isEdit) {
-    //   if(item.content === inputValue) return;
-    // }
+    if (isEdit) {
+      editComment({
+        content: inputValue,
+        diaryId: id,
+        commentId: item.id,
+      });
+      original = inputValue;
+    }
   };
- 
+
+  // const updateEdit = (event) => {
+  //   setInputValue(event.target.value)
+  // }
 
   //삼항연산자를 활용해서 isEdit === true일때 false일때 버튼,input의 역할지정
   return (
     <>
       <S.CommentItem>
-          {/* 댓글 랜덤으로 불러오는 위치 */}
-          <S.Wrapper>
-            <S.RandomCom>
-              <span style={{ width: "20%" }}>{item.User.nick_name}</span>
-              <span>{dateString}</span>
-              {item.myComment === 'Y' && 
+        {/* 댓글 랜덤으로 불러오는 위치 */}
+        <S.Wrapper>
+          <S.RandomCom>
+            <span style={{ width: '20%' }}>{item.User.nick_name}</span>
+            <span>{DATE}</span>
+            {item.myComment === 'Y' && (
               <S.Buttons>
-                <button onClick={handleEdit}>{isEdit ? "저장" : '수정'}</button>
-                <button onClick={onDeleteCom}>{isEdit ? "취소" : '삭제'}</button>
-              </S.Buttons>}
-            </S.RandomCom>
-            <S.RandomCom>
-              <img
-                src={item.User.profile_img}
-                alt="profile"
-                style={{ width: "100px", heigh: "100px", borderRadius: "50%" }}
-              ></img>
-              {isEdit ? <textarea
-            // value={inputValue.value}
-            onChange={(event) => {
-              setInputValue(event.target.value);
-            }}
-            style={{ width: "100%"}}>
-          {inputValue}</textarea> : <span style={{ width: "80%" }}>{inputValue}</span>}
-            </S.RandomCom>
-          </S.Wrapper>
+                <button onClick={handleEdit}>{isEdit ? '저장' : '수정'}</button>
+                <button onClick={onDeleteCom}>
+                  {isEdit ? '취소' : '삭제'}
+                </button>
+              </S.Buttons>
+            )}
+          </S.RandomCom>
+          <S.RandomCom>
+            <img
+              src={item.User.profile_img}
+              alt='profile'
+              style={{
+                width: '100px',
+                heigh: '100px',
+                borderRadius: '50%',
+              }}></img>
+            {isEdit ? (
+              <textarea
+                value={inputValue}
+                onChange={(event) => setInputValue(event.target.value)}
+                style={{ width: '100%' }}>
+                {item.content}
+              </textarea>
+            ) : (
+              <span style={{ width: '80%' }}>{inputValue}</span>
+            )}
+          </S.RandomCom>
+        </S.Wrapper>
       </S.CommentItem>
     </>
   );

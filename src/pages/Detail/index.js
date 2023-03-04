@@ -1,15 +1,16 @@
-import { useLocation, useParams } from "react-router-dom";
-import styled from "styled-components";
-import { flexAlignCenter, flexCenter } from "../../styles/common";
-import theme from "../../styles/theme";
-import { MockPost } from "../../__mocks__/post";
-import CommentBoard from "./components/CommentBoard";
-import CommentInput from "./components/CommentInput";
+import { useLocation, useParams } from 'react-router-dom';
+import styled from 'styled-components';
+import { flexAlignCenter, flexCenter } from '../../styles/common';
+import theme from '../../styles/theme';
+import { MockPost } from '../../__mocks__/post';
+import CommentBoard from './components/CommentBoard';
+import CommentInput from './components/CommentInput';
 
 function DetailPage() {
   const { nick_name } = useParams();
   const { state } = useLocation();
 
+  console.log(state);
   return (
     <S.Wrapper>
       <S.Container>
@@ -18,7 +19,7 @@ function DetailPage() {
           <S.UserName>{state.User.full_name}</S.UserName>
           <img
             src={state.User.profile_img}
-            style={{ width: "200px", height: "200px", borderRadius: "50%" }}
+            style={{ width: '200px', height: '200px', borderRadius: '50%' }}
           />
         </div>
         <S.Date>{String(state.createdAt)}</S.Date>
@@ -33,7 +34,7 @@ function DetailPage() {
           </div>
         </S.DetailContent>
       </S.Container>
-      <CommentInput commentList={state.Comments} />
+      <CommentInput commentList={state.Comments} id={state.id} />
     </S.Wrapper>
   );
 }
@@ -43,7 +44,7 @@ export default DetailPage;
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
-  background-color: "#F3F3F3";
+  background-color: '#F3F3F3';
   padding: 100px 0;
 `;
 
