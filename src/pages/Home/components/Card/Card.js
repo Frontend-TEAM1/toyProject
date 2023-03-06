@@ -26,13 +26,13 @@ function Card({ diary }) {
   const dayDiff = today.diff(created, 'd');
   //true까지 넣으면 소수점단위로 초까지 비교 후 리턴
 
-  console.log(created.date);
+  // console.log(created.date);
   let DATE;
   if (dayDiff === 0 && created.get('d') === today.get('d')) DATE = '3시간 전';
   if (dayDiff >= 1) DATE = `${dayDiff}일 전`;
   if (dayDiff >= 4) DATE = created.format('YYYY-MM-DD');
 
-  console.log('DAY===============', dayDiff);
+  // console.log('DAY===============', dayDiff);
 
   /* momentJs
   const myDate = moment(diary.createdAt);

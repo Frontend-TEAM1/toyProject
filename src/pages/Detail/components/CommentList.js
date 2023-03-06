@@ -6,44 +6,33 @@ import dayjs from 'dayjs';
 import { useDispatch } from 'react-redux';
 import { deleteComment, editComment } from '../../../store/diary';
 
-function CommentList({ item, commentList, id }) {
+function CommentList({ comList, setComList, item, id }) {
   // item은 새 댓글 포함된 배열의 한개 한개(map의 결과)
   // commentList는 새 댓글 포함 전체 댓글들이 담긴 배열
   // https://jsikim1.tistory.com/196 dayjs 글
-
+  const [isEdit, setIsEdit] = useState(false);
+  const [inputValue, setInputValue] = useState(item.content);
+  // const [original, setOriginal] = useState(inputValue);
+  let original = inputValue;
   const dispatch = useDispatch();
+
   //댓글삭제
   const onDeleteCom = () => {
     if (isEdit) {
       // 취소버튼으로써 동작할 때
+      console.log('취소버튼 눌림');
       setInputValue(original);
       return setIsEdit(false);
     }
-    dispatch(deleteComment({ diaryId: id, commentId: item.id }));
+    console.log('삭제버튼 눌림');
+    return dispatch(deleteComment({ diaryId: id, commentId: item.id }));
     // 데이터는 바뀌었는데 왜 그려지지 않을까? state로만 바뀌면 될 것 같은데
-
-    // const newComList = commentList.filter((com) => {
-    //   return com.id !== item.id;
-    // });
-    // // setCommentList(newComList);
-    // commentList = newComList;
   };
 
   // 삭제버튼을 누르면 일치하는 저장된 값을 비운다.
   // comList에 값을 하나씩 꺼내서 비교하고 일치하는 값을 잘라준다.
   // 새로운 배열도 넣어줬고..
   // 삭제 버튼을 클릭했을 때, onDeleteCom을 실행
-
-  const [isEdit, setIsEdit] = useState(false);
-  const [inputValue, setInputValue] = useState(item.content);
-  // const [original, setOriginal] = useState(inputValue);
-  let original = inputValue;
-
-  /*
-아이디어..!
-state로 관리하는게 item.content말고 다른 값을 넣고..
-comList자체에 접근해서  content만 업데이트하고 리랜더링?
-*/
 
   // Dayjs
   const created = dayjs(item.createdAt);
@@ -60,19 +49,18 @@ comList자체에 접근해서  content만 업데이트하고 리랜더링?
   // 수정버튼 클릭 이벤트
   const handleEdit = () => {
     setIsEdit((prev) => !prev);
+    console.log('수정버튼');
     if (isEdit) {
-      editComment({
-        content: inputValue,
-        diaryId: id,
-        commentId: item.id,
-      });
+      dispatch(
+        editComment({
+          content: inputValue,
+          diaryId: id,
+          commentId: item.id,
+        })
+      );
       original = inputValue;
     }
   };
-
-  // const updateEdit = (event) => {
-  //   setInputValue(event.target.value)
-  // }
 
   //삼항연산자를 활용해서 isEdit === true일때 false일때 버튼,input의 역할지정
   return (

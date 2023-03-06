@@ -24,26 +24,34 @@ const diaryReducer = (state = initialState, action) => {
       console.log(addedState[addedIdx].Comments);
       addedState[addedIdx].Comments.push(newValue);
       return addedState;
+
     case 'EDIT_COMMENT':
       const editState = [...state];
+      console.log('수정');
       const editIdx = editState.findIndex(
         (com) => com.id === action.payload.diaryId
       );
       const updatedIdx = editState[editIdx].Comments.findIndex(
         (com) => com.id === action.payload.commentId
       );
+      console.log(editState[editIdx].Comments[updatedIdx].content);
       editState[editIdx].Comments[updatedIdx].content = action.payload.content;
+      console.log('editState', editState);
       return editState;
+
     case 'DELETE_COMMENT':
       const deletedState = [...state];
       const deletedIdx = deletedState.findIndex(
         (com) => com.id === action.payload.diaryId
       );
+      console.log('1', deletedState[deletedIdx].Comments);
       deletedState[deletedIdx].Comments = deletedState[
         deletedIdx
       ].Comments.filter((item) => item.id !== action.payload.commentId);
-      console.log(deletedState);
+      console.log('2', deletedState[deletedIdx].Comments);
+      console.log('deletedState', deletedState);
       return deletedState;
+
     default:
       return state;
   }

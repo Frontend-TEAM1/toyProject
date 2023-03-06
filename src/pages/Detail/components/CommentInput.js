@@ -10,6 +10,7 @@ import { addComment } from '../../../store/diary';
 
 function CommentInput({ commentList, id }) {
   const [inputValue, setInputValue] = useState(''); //input창 빈문자열로 시작
+  const [comList, setComList] = useState(commentList);
   // console.log("comList", comList);
   const dispatch = useDispatch();
 
@@ -23,7 +24,11 @@ function CommentInput({ commentList, id }) {
   return (
     <>
       <S.list>
-        <CommentBoard commentList={commentList} id={id} />
+        <CommentBoard
+          comList={comList}
+          setComList={setComList} commentList={commentList}
+          id={id}
+        />
       </S.list>
       <S.ComWrapper>
         <input

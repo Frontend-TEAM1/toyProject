@@ -3,22 +3,27 @@ import styled from 'styled-components';
 import { flexAlignCenter } from '../../../styles/common';
 import CommentList from './CommentList';
 
-function CommentBoard({ commentList, id }) {
+function CommentBoard({ comList, setComList, id }) {
   // console.log("CommentInput으로부터 받은 comList", comList);
 
-  console.log(commentList);
+  console.log('commentBoard에 comList', comList);
   return (
     <Wrapper>
       <div>
         <span>ALL COMMENTS</span>
-        {commentList &&
-          commentList
+        {comList &&
+          comList
             .sort((a, b) => {
               return b.createdAt - a.createdAt;
             })
             .map((item) => {
               return (
-                <CommentList item={item} commentList={commentList} id={id} />
+                <CommentList
+                  item={item}
+                  comList={comList}
+                  setComList={setComList}
+                  id={id}
+                />
               );
             })}
       </div>

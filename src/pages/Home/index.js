@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { flexCenter } from '../../styles/common';
@@ -8,18 +9,49 @@ function HomePage() {
   // const Posts = MockPost(20);
   const diaries = useSelector((state) => state.diaryReducer);
   console.log(diaries);
+  const bottomRef = useRef(null);
+  const endRef = useRef(false);
+  const preventRef = useRef(true);
+  const [page, setPage] = useState(1);
+  // null일 경우 viewport
 
-  // let observer = new IntersectionObserver(() => {}, options)
+  // useEffect(() => {
+  //   observer;
+  // }, []);
+
+  useEffect(() => {
+    //옵저버 생성. 감지까지는 되는데 불러오는 로직 이해 필요.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const target = entries[0];
+        console.log('----------------->', entries);
+        if (!endRef.current && target.isIntersecting && preventRef.current) {
+          preventRef.current = false; // 옵저버 중복실행 방지
+          setPage((prev) => prev + 1);
+        }
+      },
+      { threshold: 0.5 }
+    );
+    console.log(bottomRef.current);
+    if (bottomRef.current) observer.observe(bottomRef.current);
+    return () => {
+      observer.disconnect();
+    };
+  });
+
   return (
-    <Container>
-      {diaries
-        .sort((a, b) => {
-          return b.createdAt.getTime() - a.createdAt.getTime();
-        })
-        .map((diary) => {
-          return <Card diary={diary} />;
-        })}
-    </Container>
+    <>
+      <Container>
+        {diaries
+          .sort((a, b) => {
+            return b.createdAt.getTime() - a.createdAt.getTime();
+          })
+          .map((diary, idx) => {
+            return <Card diary={diary} key={idx} />;
+          })}
+      </Container>
+      <div ref={bottomRef}></div>
+    </>
   );
 }
 
