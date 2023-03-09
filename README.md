@@ -1,4 +1,4 @@
-###주제 : 오늘의 일기
+###주제 : 오늘의 일기(https://todaysdiary.net/)
 
 Pair1 구현서 장영승 / Pair2 김나실 이재훈 이주람
 
